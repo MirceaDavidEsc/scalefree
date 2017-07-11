@@ -1,0 +1,20 @@
+Package: scalefree
+Type: Package
+Title: Spatial Correlation Analysis of Collectives
+Version: 0.1.0
+Authors@R: c(
+    person("Mircea", "Davidescu", , "mirceadavidescu@outlook.com", role = c("aut", "cre"))
+  )
+Maintaner@R: c(
+    person("Mircea", "Davidescu", , "mirceadavidescu@outlook.com", role = c("aut", "cre",))
+  )
+Description: This package contains functions that allow for the analysis of
+    spatial correlations in collective moving systems. This package is useful for
+    analysis of fluctuations, measuring the correlation length of collective systems,
+    their susceptibility. The goal of this package is to enable a biophysics analysis of collective behavior,
+    as developed by researchers such as William Bialek, Andrea Cavagna, Tamas Vicsek, among others.
+License: GPL-3
+Encoding: UTF-8
+Depends: dplyr, bigsplines, collective
+LazyData: true
+RoxygenNote: 6.0.1
