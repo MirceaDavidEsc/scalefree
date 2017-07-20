@@ -15,6 +15,10 @@ Description: This package contains functions that allow for the analysis of
     as developed by researchers such as William Bialek, Andrea Cavagna, Tamas Vicsek, among others.
 License: GPL-3
 Encoding: UTF-8
-Depends: dplyr, bigsplines, collective
+Imports:
+  dplyr,
+  bigsplines,
+  collective,
+    tidyr
 LazyData: true
 RoxygenNote: 6.0.1

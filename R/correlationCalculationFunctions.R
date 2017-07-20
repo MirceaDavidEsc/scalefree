@@ -1,3 +1,23 @@
+devtools::use_package("dplyr")
+devtools::use_package("bigsplines")
+devtools::use_package("collective")
+devtools::use_package("tidyr")
+devtools::use_package("pracma")
+
+
+
+#' scalefree: measure spatial correlations in collective systems
+#'
+#' The scalefree package provides functions that can take movement data
+#' (velocities) from a collective system, decompose the full velocities into
+#' collective and fluctuation components, measure the spatial correlations among
+#' the fluctuations, and quantify statistical properties like correlation length
+#' and susceptibility.
+#'
+#' @docType package
+#' @name scalefree
+NULL
+
 #' Get correlation lengths from profiles
 #'
 #' This function takes a data frame of correlation profiles (grouped by a certain variable) and determines the zero-intercept (correlation length) for each ccorrelation profile.
@@ -38,7 +58,7 @@ calcCorrelationLengths = function(groupedProfiles) {
 #' @export
 #'
 #' @examples
-calcCorrelationFunction = function(velocityField, sampleSize = 2000) {
+calcCorrelationFunction = function(velocityField, fluctuationField = NULL, sampleSize = 3600) {
   if (dim(velocityField)[1] > sampleSize) {
     sampleRows = sample(1:dim(velocityField)[1], sampleSize)
   } else {
@@ -47,7 +67,9 @@ calcCorrelationFunction = function(velocityField, sampleSize = 2000) {
 
 
   # Get pairwise indices for a manageable subset of vectors, and get their distances and speed correlations
-  fluctuationField = calculateFluctuationField(velocityField)
+  if (is.null(fluctuationField))
+    fluctuationField = calculateFluctuationField(velocityField)
+
   forCalculation = velocityField %>% slice(sampleRows)
   vectorFluctuations = fluctuationField %>% slice(sampleRows)
 
@@ -71,19 +93,21 @@ calcCorrelationFunction = function(velocityField, sampleSize = 2000) {
 
 
 
-#' Isolate individual velocity fluctuations by removing collective modes of movement
+#' Get fluctuations in a collectively moving system
 #'
-#' This function takes in data frame representing a velocity field and removes the collective modes (translation, rotation, dilatation) to produce the
+#' This function takes in data frame representing a velocity field and removes
+#' the collective modes (translation, rotation, dilatation) to produce the
 #' corresponding collective
 #'
-#' @param frameVectorField Takes in a N-by-4 velocity field where each vector consists of a point and its velocity
-#' defined as (x, y, vx, vy).
+#' @param frameVectorField A N-by-4 data frame. N moving components, columns are positions X, Y, and velocity components vX, and vY.
 #'
-#' @return A N-by-4 velocity field that provides the relative position and fluctuation velocity of each point..
+#' @return A N-by-4 data frame: X, Y, vX, and vY are columns, rows are moving components.
 #'
 #' @examples
 #' velocityField = data.frame(x = runif(0,10,100), y = runif(0,10,100), vx = rnorm(100, 0, 2), vy = rnorm(100, 0, 2))
 #' fluctField = calculateFluctuationField(velocityField)
+#'
+#' @family vector decomposition
 calculateFluctuationField = function(frameVectorField) {
   colnames(frameVectorField) = c("X", "Y", "vX", "vY")
   # From the initial positions and instantenous velocity, determine the future position.
@@ -98,7 +122,6 @@ calculateFluctuationField = function(frameVectorField) {
 
   # Apply optimal affine transform on future points to get the closest superposition of points.
   realignedPoints = affineTransform(positionsInterp[,3:4], paramX, paramY, paramR, paramD)
-  print(paste(paramX, paramY, paramR, paramD))
 
   # Subtract past positions from future positions post-transformation to get fluctuation vectors.
   alignedPositions = cbind(positionsInterp, realignedPoints)
@@ -113,12 +136,18 @@ calculateFluctuationField = function(frameVectorField) {
 
 #' Get the collective motion in a vector field.
 #'
-#' @param frameVectorField A data frame specifying X, Y, vX, and vY for a collectively moving system, where each row is a unit or component.
+#' The vectors that define the movement of components in a collective system can be thought of as being composed of two parts: a fluctuation and a collective
+#' component.
+#'
+#' @inheritParams calculateFluctuationField
 #'
 #' @return A data frame specifying the collective component of the collective movement; i.e. what can be explained by idealized affine transformations.
 #' @export
 #'
 #' @examples
+#'
+#' @family vector decomposition
+#' @seealso \code{\link{calculateFluctuationField} for fluctuation component}
 calculateCollectiveField = function(frameVectorField) {
   colnames(frameVectorField) = c("X", "Y", "vX", "vY")
   # From the initial positions and instantenous velocity, determine the future position.
@@ -273,20 +302,22 @@ removeRotationalComponent = function(thisFrame) {
 
 #' Measure correlation decay by slope at correlation length
 #'
-#' This function takes in two vectors that define the correlation profile of any collective system and measures the slope at the zero-intercept (correlation length)
-#' by using the 5-point stencil method on the five data points closest to the x-intercept of the correlation profile.
+#' This function takes in two vectors that define the correlation profile of any
+#' collective system and measures the slope at the zero-intercept (correlation
+#' length) by using the 5-point stencil method on the five data points closest
+#' to the x-intercept of the correlation profile. Based off of advice from
+#' http://www.theanalysisfactor.com/r-tutorial-4/
 #'
 #' @param distances A vector representing distance measures
-#' @param correlations A vector of the corresponding average pair-wise correlation at that distance.
+#' @param correlations A vector of the corresponding average pair-wise
+#'   correlation at that distance.
 #'
 #' @return
 #' @export
 #'
 #' @examples
 correlationSlope = function(distances, correlations) {
-  # Calculates the slope of the correlation profile at the zero intercept, for the rescaled profile.
-  # It does this using a very robust method: take closest five points, fit a quadratic, then derivative.
-  # Based off of advice from http://www.theanalysisfactor.com/r-tutorial-4/
+
   quadraticFit = lm(correlations ~ distances + I(distances^2))
   definePoly = as.polynomial(quadraticFit$coefficients)
   derivativePoly = deriv(definePoly)
@@ -297,12 +328,18 @@ correlationSlope = function(distances, correlations) {
 
 
 
-#' Calculate susceptibility (maximum cumulative correlation)
-#' Uses the method developed in Attanasi et al. 2014 to calculate the finite-size susceptibility or maximal cumulative correlation
-#' of a collectively moving system. The cumulative correlation is calculated using the trapezoidal (Simpson's) rule for numerical integration.
-#' This function filters the correlation profile to only consider values before the first zero-crossing if it detects any negative correlation values.
+#' Calculate Susceptibility (Maximum Cumulative Correlation)
 #'
-#' @param distance The domain over which to integrate. If not provided, daata points are assumed to be evenly spaced with distance 1.
+#' Uses the method
+#' developed in Attanasi et al. 2014 to calculate the finite-size susceptibility
+#' or maximal cumulative correlation of a collectively moving system. The
+#' cumulative correlation is calculated using the trapezoidal (Simpson's) rule
+#' for numerical integration. This function filters the correlation profile to
+#' only consider values before the first zero-crossing if it detects any
+#' negative correlation values.
+#'
+#' @param distance The domain over which to integrate. If not provided, daata
+#'   points are assumed to be evenly spaced with distance 1.
 #' @param correlation The correlation at the corresponding distance.
 #'
 #' @return
@@ -310,10 +347,9 @@ correlationSlope = function(distances, correlations) {
 #'
 #' @examples
 calculateSusceptibility = function(distance = 1:length(correlation), correlation) {
-  require(pracma)
   # Calculate susceptibility using trapezoidal rule of the curve.
   # Filter at the first zero crossing if not done already
-  if (any(correlation < 0)) {
+  if (min(correlation) < 0) {
     zeroCrossing = getFirstZeroCrossing(correlation)
     distance = distance[1:zeroCrossing]
     correlation = correlation[1:zeroCrossing]
@@ -379,6 +415,7 @@ getPairwiseDistances = function(coordinates) {
   return(distances)
 }
 
+
 getVelocityCorrelation = function(fluctuationVectors) {
   fluctuationVectors = as.matrix(fluctuationVectors)
   tFluctuationVectors = t(fluctuationVectors)
@@ -409,6 +446,17 @@ getSpeedCorrelation = function(velocityVectors) {
 }
 
 
+
+#' Title
+#'
+#' @param numVectors
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' @keywords internal
 getPairwiseIndices = function(numVectors) {
   # Produce all index pairs, excluding repeat entries by only getting upper-triangle.
   pairwiseInds = expand.grid(1:numVectors, 1:numVectors)
@@ -447,8 +495,8 @@ normCorrFunction = function(domain,correlations, resolution=1, nknots = 50) {
 
 #' Title
 #'
-#' @param thisVector
-#' @param distMapping
+#' @param thisVector A numeric vector
+#' @param distMapping A numeric vector
 #'
 #' @return
 #' @export
@@ -470,12 +518,6 @@ getFirstZeroCrossing = function(thisVector,distMapping=1:length(thisVector)) {
 
 
 
-dilatationalOrderParameter = function(velocityFieldDF) {
-
-}
-
-
-
 identifyBoundary = function(X, Y, marginPercent, ballSize) {
   centered = cbind(X - mean(X), Y - mean(Y))
   jitterPoints = as.data.frame(apply(centered,2, jitter))
@@ -485,93 +527,8 @@ identifyBoundary = function(X, Y, marginPercent, ballSize) {
   inahull(hull, cbind(jitterPoints$V1/(1-marginPercent), jitterPoints$V2/(1-marginPercent)))
 }
 
-#' Title
-#'
-#' @param frameProfiles
-#' @param offset
-#'
-#' @return
-#' @export
-#'
-#' @examples
-getCorrelationLengths = function(frameProfiles,offset=0) {
-  # Takes in a three-column data frame consisting of a frame number, a correlation value, and a distance value.
-  colnames(frameProfiles) = c("Frame","correlation","distance")
-  allFrames = unique(frameProfiles$Frame)
-  storage = rep(0,length(allFrames))
-  zeroCrossings = data.frame(Frame=storage,CorrelationLength=storage)
-
-  for (thisFrameIndex in 1:length(allFrames)) {
-    thisFrame = allFrames[thisFrameIndex]
-    zeroCrossings$Frame[thisFrameIndex] = thisFrame
-    # Get the 0 crossing of that frame and save in a data frame.
-    thisFrameCorrelations = filter(frameProfiles,Frame==thisFrame)
-    zeroCrossings$CorrelationLength[thisFrameIndex] = getFirstZeroCrossing(thisFrameCorrelations$correlation,distMapping = thisFrameCorrelations$distance)
-  }
-  # Return the data frame.
-  return(zeroCrossings)
-}
 
 
-loadSourceVideoTypes = function(masterDir) {
-  coolsnapVideos = dirname(list.files(path = masterDir, pattern="^movie\\.avi$",recursive = T,full.names = T))
-  hammamatsuVideos = dirname(list.files(path=masterDir, pattern="^hamm-movie\\.avi$", recursive=T, full.names=T))
-  numVideos = length(coolsnapVideos) + length(hammamatsuVideos)
-  videoSources = data.frame(folder=c(rep("",numVideos)),hammVideo=F, stringsAsFactors = F)
-  videoSources$folder[1:length(coolsnapVideos)] = coolsnapVideos
-  videoSources$folder[(length(coolsnapVideos)+1):numVideos] = hammamatsuVideos
-  videoSources$hammVideo[(length(coolsnapVideos)+1):numVideos] = T
-  return(videoSources)
-}
-
-
-loadDataByFolder = function(masterDir,filepattern) {
-  filesList = list.files(path=masterDir, pattern=filepattern, recursive = T, full.names = T)
-  for (thisFile in filesList) {
-    tempFile = read.csv(thisFile)
-    tempFile$folder = thisFile
-    if (thisFile == filesList[1]) {
-      returnData = tempFile
-    } else {
-      returnData = rbind(returnData,tempFile)
-    }
-    colnames(returnData) = colnames(tempFile)
-  }
-  return(returnData)
-}
-
-
-getCorrelationLengthTimeSeries = function(hdf5Data,forFrames) {
-  require(doParallel)
-  numFrames = length(forFrames)
-  correlationLengths = data.frame(Frame = forFrames, velocityCorrelationLength = rep(NA,numFrames), directionalCorrelationLength = rep(NA,numFrames), speedCorrelationLength = rep(NA,numFrames))
-
-  allVelocityFields = readVelocityFieldAtFrame(hdf5Identifier = hdf5Data,frameNumbers = forFrames)
-
-  # Set up parallel cluster environment.
-  cl = makeCluster(7)
-  registerDoParallel(cl)
-  clusterEvalQ(cl,expr = "library(rhdf5);library(dplyr)")
-  listOfExportFunctions = c("calculateFluctuationField", "measureDeviation", "affineTransform", "getPairwiseCorrelations")
-  clusterExport(cl,varlist = listOfExportFunctions)
-  correlationProfiles = clusterApply(cl, x = allVelocityFields, fun = calculateCorrelationProfile)
-  stopCluster(cl)
-
-  allFrameCorrelation = bind_rows(correlationProfiles)
-  vCorrLength = select(allFrameCorrelation,Frame,meanVelocityCorrelation,meanDist) %>% getCorrelationLengths(offset = 0)
-  colnames(vCorrLength) = c("Frame","velocityCorrelationLength")
-  dCorrLength = select(allFrameCorrelation,Frame,meanDirectionalCorrelation,meanDist) %>% getCorrelationLengths(offset = 0)
-  colnames(dCorrLength) = c("Frame","directionCorrelationLength")
-  sCorrLength = select(allFrameCorrelation,Frame,meanSpeedCorrelation,meanDist) %>% getCorrelationLengths(offset = 0)
-  colnames(sCorrLength) = c("Frame","speedCorrelationLength")
-  theseCorrelationLengths = inner_join(vCorrLength,dCorrLength,by="Frame") %>% inner_join(sCorrLength,by="Frame")
-  return(list(theseCorrelationLengths,allFrameCorrelation))
-}
-
-getInactiveCells = function(currFrame, speedThreshold=0.01) {
-  currFrame = currFrame %>% mutate(speed = sqrt(u^2+v^2)) %>%
-    mutate(inactiveCell = speed < speedThreshold)
-}
 
 
 #' Standardize Placozoa data frames.
