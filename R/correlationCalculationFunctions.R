@@ -1,10 +1,13 @@
-devtools::use_package("dplyr")
-devtools::use_package("bigsplines")
-devtools::use_package("collective")
-devtools::use_package("tidyr")
-devtools::use_package("pracma")
-
-
+#devtools::use_package("dplyr")
+#devtools::use_package("bigsplines")
+#devtools::use_package("collective")
+#devtools::use_package("tidyr")
+#devtools::use_package("pracma")
+library(dplyr)
+library(bigsplines)
+library(collective)
+library(tidyr)
+library(pracma)
 
 #' scalefree: measure spatial correlations in collective systems
 #'
