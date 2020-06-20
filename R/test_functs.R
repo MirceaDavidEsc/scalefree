@@ -1,16 +1,3 @@
-# Testing the functions in the scale-free package to prove that they can perform their required functions
-library(readr)
-library(collective)
-# Load a sample vector field and use only the locations for now.
-if (!file.exists("exampleField.rds")) {
-  sampleField = readDataAtFrame(hdf5Identifier = "E:/Placozoa/HighMagTracked/2013-07-01-run_1/longformOpticalFlow.hdf5", "longform", "longformFrameIndices", 219) %>%
-    standardizePlacozoaVectors() %>% select(-Frame)
-  write_rds(sampleField, "exampleField.rds")
-}
-
-testField = read_rds("exampleField.rds")
-initialPoints = testField %>% select(X, Y)
-
 # Test the affine transformation capabilities.
 test_affineNoChange = function(initialPoints) {
   testTransform = affineTransform(initialPoints, 0, 0, 0, 1)
