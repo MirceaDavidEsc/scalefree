@@ -6,8 +6,6 @@ test_affineNoChange = function(initialPoints) {
   colnames(finalPoints) = c("X", "Y", "vX", "vY")
   return(max(abs(c(range(finalPoints$vX), range(finalPoints$vY)))) == 0)
 }
-test_affineNoChange(initialPoints)
-
 
 # Try a translation in either direction
 test_affineTranslate = function(initialPoints) {
@@ -50,7 +48,6 @@ test_reverseAffine = function(initialPoints) {
   reverseTransform = affineTransform(testTransform, -5, -5, 0, 1/1.05)
   return(max(abs(initialPoints - reverseTransform)) < 10^-10)
 }
-test_reverseAffine(initialPoints)
 
 # Test whether measurement of deviation is a reasonable criterion for matching points.
 test_deviationReversed = function(initialPoints) {
@@ -61,7 +58,6 @@ test_deviationReversed = function(initialPoints) {
   reverseDeviation = measureDeviation(c(-5,-5,-pi/100, 1/1.005), transformedPoints)
   return(initialDeviation > reverseDeviation & reverseDeviation < 10^-4)
 }
-test_deviationReversed(initialPoints)
 
 # Try to find the optimal reverse affine transform.
 test_optimalReverseAffine = function(initialPoints) {
@@ -77,8 +73,6 @@ test_optimalReverseAffine = function(initialPoints) {
   reversal = c(affineParams[[1]] + optimalAffine[[1]], affineParams[[2]] + optimalAffine[[2]], affineParams[[3]] + optimalAffine[[3]], affineParams[[4]]*affineParams[[4]])
   return(reversal - c(0,0,0,1) < 0.05)
 }
-test_optimalReverseAffine(initialPoints)
-
 
 
 test_retrieveFluctuations = function(testField) {
@@ -97,7 +91,7 @@ test_retrieveFluctuations = function(testField) {
 }
 
 
-#' Title
+#' test_retrieveCollective
 #'
 #' @param testField
 #'
@@ -111,21 +105,3 @@ test_retrieveCollective = function(testField) {
   remainderField = testField %>% mutate(remainderX = vX - fluctField$fluctX, remainderY = vY - fluctField$fluctY) %>%
     mutate(consistX = remainderX - collectiveField$collectiveX, consistY = remainderY - collectiveField$collectiveY)
 }
-
-#testField = read_rds("exampleField.rds")
-#test_optimalReverseReal(testField)
-
-
-#ahullVectors = read_rds("D:/Mircea/Projects/RESEARCH/InternalCoordination/ahullVectors.rds")
-#randomSample = ahullVectors %>% group_by(folder, Frame) %>% nest(.key = "vectorField") %>% sample_n(20)
-# ahullVectors = read_rds("D:/Mircea/Projects/RESEARCH/InternalCoordination/ahullVectors.rds") %>% filter(folder == "2013-07-01-run_1")
-# ahullVectors = ahullVectors %>% group_by(folder, Frame) %>% nest()
-# testField = ahullVectors$data[[1]]
-#
-#
-# #write_rds(sampleField, "D:/Mircea/ScriptLibraries/R/Collective/real.rds")
-# ggplot(sampleField, aes(X, Y)) + geom_point() + coord_fixed()
-# sampleField = select(sampleField, -Frame)
-# quiverPlot(sampleField, 1, colormapped = T)
-# fluctuations = calculateFluctuationField(sampleField)
-# quiverPlot(fluctuations, 1, colormapped = T)
