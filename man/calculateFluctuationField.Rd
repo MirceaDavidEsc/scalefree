@@ -2,28 +2,16 @@
 % Please edit documentation in R/correlationCalculationFunctions.R
 \name{calculateFluctuationField}
 \alias{calculateFluctuationField}
-\title{Get fluctuations in a collectively moving system}
+\title{Calculate fluctuation field from a regular velocity field}
 \usage{
 calculateFluctuationField(frameVectorField)
 }
 \arguments{
-\item{frameVectorField}{A N-by-4 data frame. N moving components, columns are positions X, Y, and velocity components vX, and vY.}
+\item{frameVectorField}{A data frame of 4 columns describing points in space with velocities (2D data)}
 }
 \value{
-A N-by-4 data frame: X, Y, vX, and vY are columns, rows are moving components.
+The fluctuation field once affine movements are removed.
 }
 \description{
-This function takes in data frame representing a velocity field and removes
-the collective modes (translation, rotation, dilatation) to produce the
-corresponding collective
+Calculate fluctuation field from a regular velocity field
 }
-\examples{
-velocityField = data.frame(x = runif(0,10,100), y = runif(0,10,100), vx = rnorm(100, 0, 2), vy = rnorm(100, 0, 2))
-fluctField = calculateFluctuationField(velocityField)
-
-}
-\seealso{
-Other vector decomposition: 
-\code{\link{calculateCollectiveField}()}
-}
-\concept{vector decomposition}

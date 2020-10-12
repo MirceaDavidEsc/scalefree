@@ -11,6 +11,7 @@
 #' @name scalefree
 NULL
 
+
 #' Get correlation lengths from profiles
 #'
 #' This function takes a data frame of correlation profiles (grouped by a certain variable) and determines the zero-intercept (correlation length) for each ccorrelation profile.
@@ -21,7 +22,6 @@ NULL
 #' @return
 #' @export
 #'
-#' @examples
 calcCorrelationLengths = function(groupedProfiles) {
 
   # Nest the profiles appropriately so that it can work with my functions.
@@ -49,8 +49,6 @@ calcCorrelationLengths = function(groupedProfiles) {
 #'
 #' @return The correlation functions/profiles for the vector field.
 #' @export
-#'
-#' @examples
 calcCorrelationFunction = function(velocityField, fluctuationField = NULL, sampleSize = 3600) {
   if (dim(velocityField)[1] > sampleSize) {
     sampleRows = sample(1:dim(velocityField)[1], sampleSize)
@@ -86,21 +84,12 @@ calcCorrelationFunction = function(velocityField, fluctuationField = NULL, sampl
 
 
 
-#' Get fluctuations in a collectively moving system
+#' Calculate fluctuation field from a regular velocity field
 #'
-#' This function takes in data frame representing a velocity field and removes
-#' the collective modes (translation, rotation, dilatation) to produce the
-#' corresponding collective
+#' @param frameVectorField A data frame of 4 columns describing points in space with velocities (2D data)
 #'
-#' @param frameVectorField A N-by-4 data frame. N moving components, columns are positions X, Y, and velocity components vX, and vY.
-#'
-#' @return A N-by-4 data frame: X, Y, vX, and vY are columns, rows are moving components.
-#'
-#' @examples
-#' velocityField = data.frame(x = runif(0,10,100), y = runif(0,10,100), vx = rnorm(100, 0, 2), vy = rnorm(100, 0, 2))
-#' fluctField = calculateFluctuationField(velocityField)
-#'
-#' @family vector decomposition
+#' @return The fluctuation field once affine movements are removed.
+#' @export
 calculateFluctuationField = function(frameVectorField) {
   colnames(frameVectorField) = c("X", "Y", "vX", "vY")
   # From the initial positions and instantenous velocity, determine the future position.
