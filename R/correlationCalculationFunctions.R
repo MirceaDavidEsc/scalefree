@@ -522,6 +522,12 @@ identifyBoundary = function(X, Y, marginPercent, ballSize) {
 
 
 
+removeBoundary = function (pointsDF)
+{
+  pointsDF$bulk = scalefree::identifyBoundary(pointsDF$X, pointsDF$Y, 0.1, 5)
+  pointsDF = pointsDF[pointsDF$bulk,]
+  return(pointsDF)
+}
 
 
 #' Standardize Placozoa data frames.
