@@ -510,7 +510,20 @@ getFirstZeroCrossing = function(thisVector,distMapping=1:length(thisVector)) {
 }
 
 
-
+#' Identify the points of a collective that are part of the boundary
+#'
+#' This function takes a data frame of points and identifies the points that form the boundary through alpha-hull methods.
+#'
+#'
+#' @param X X coordinate
+#' @param Y Y coordinate
+#' @param marginPercent The percent of the marginal points (from center radius) to be considered boundary
+#' @param ballSize Parameter specifying ball size that represents alpha-hull.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 identifyBoundary = function(X, Y, marginPercent, ballSize) {
   centered = cbind(X - mean(X), Y - mean(Y))
   jitterPoints = as.data.frame(apply(centered,2, jitter))
@@ -521,7 +534,17 @@ identifyBoundary = function(X, Y, marginPercent, ballSize) {
 }
 
 
-
+#' Remove boundary points using alpha-hull
+#'
+#' This function takes a data frame of points and identifies the points that form the boundary through alpha-hull methods, removing the points.
+#'
+#'
+#' @param pointsDF 4-column data frame that specifies points in space and their velocities.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 removeBoundary = function (pointsDF)
 {
   pointsDF$bulk = scalefree::identifyBoundary(pointsDF$X, pointsDF$Y, 0.1, 5)
