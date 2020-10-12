@@ -7,7 +7,12 @@
 getFirstZeroCrossing(thisVector, distMapping = 1:length(thisVector))
 }
 \arguments{
-\item{distMapping}{}
+\item{thisVector}{A numeric vector}
+
+\item{distMapping}{A numeric vector}
+}
+\value{
+
 }
 \description{
 Title

@@ -4,7 +4,11 @@
 \alias{calcCorrelationFunction}
 \title{Calculate fluctuation correlations in a full velocity field.}
 \usage{
-calcCorrelationFunction(velocityField, sampleSize = 2000)
+calcCorrelationFunction(
+  velocityField,
+  fluctuationField = NULL,
+  sampleSize = 3600
+)
 }
 \arguments{
 \item{velocityField}{A data frame containing all the vectors in a velocity field (full velocities)}

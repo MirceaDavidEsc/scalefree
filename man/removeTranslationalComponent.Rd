@@ -9,6 +9,9 @@ removeTranslationalComponent(thisFrame)
 \arguments{
 \item{thisFrame}{}
 }
+\value{
+
+}
 \description{
 Title
 }

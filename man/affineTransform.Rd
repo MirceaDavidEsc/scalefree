@@ -4,8 +4,7 @@
 \alias{affineTransform}
 \title{Perform affine transformation on two-dimensional points.}
 \usage{
-affineTransform(points, translateX = 0, translateY = 0, rotate = 0,
-  dilate = 1)
+affineTransform(points, translateX = 0, translateY = 0, rotate = 0, dilate = 1)
 }
 \arguments{
 \item{points}{A N-by-2 data frame representing a set of two-dimensional Cartesian points.}
@@ -17,6 +16,9 @@ affineTransform(points, translateX = 0, translateY = 0, rotate = 0,
 \item{dilate}{A scalar representing the amount by which to magnify (or shrink) the point positions relative to the center of mass.}
 
 \item{tranlsateY}{A scalar representing the amount by which to move the points in the Y direction.}
+}
+\value{
+
 }
 \description{
 Perform affine transformation on two-dimensional points.

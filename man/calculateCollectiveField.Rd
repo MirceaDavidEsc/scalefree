@@ -7,11 +7,22 @@
 calculateCollectiveField(frameVectorField)
 }
 \arguments{
-\item{frameVectorField}{A data frame specifying X, Y, vX, and vY for a collectively moving system, where each row is a unit or component.}
+\item{frameVectorField}{A N-by-4 data frame. N moving components, columns are positions X, Y, and velocity components vX, and vY.}
 }
 \value{
 A data frame specifying the collective component of the collective movement; i.e. what can be explained by idealized affine transformations.
 }
 \description{
-Get the collective motion in a vector field.
+The vectors that define the movement of components in a collective system can be thought of as being composed of two parts: a fluctuation and a collective
+component.
 }
+\examples{
+
+}
+\seealso{
+\code{\link{calculateFluctuationField} for fluctuation component}
+
+Other vector decomposition: 
+\code{\link{calculateFluctuationField}()}
+}
+\concept{vector decomposition}

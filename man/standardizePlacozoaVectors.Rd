@@ -9,6 +9,9 @@ standardizePlacozoaVectors(dataFrame)
 \arguments{
 \item{dataFrame}{}
 }
+\value{
+
+}
 \description{
 Standardize Placozoa data frames.
 }

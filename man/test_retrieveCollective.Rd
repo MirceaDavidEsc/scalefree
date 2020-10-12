@@ -2,13 +2,16 @@
 % Please edit documentation in R/test_functs.R
 \name{test_retrieveCollective}
 \alias{test_retrieveCollective}
-\title{Title}
+\title{test_retrieveCollective}
 \usage{
 test_retrieveCollective(testField)
 }
 \arguments{
 \item{testField}{}
 }
+\value{
+
+}
 \description{
-Title
+test_retrieveCollective
 }

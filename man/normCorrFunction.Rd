@@ -9,6 +9,9 @@ normCorrFunction(domain, correlations, resolution = 1, nknots = 50)
 \arguments{
 \item{frameData}{}
 }
+\value{
+
+}
 \description{
 Title
 }

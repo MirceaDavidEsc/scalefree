@@ -9,9 +9,16 @@ correlationSlope(distances, correlations)
 \arguments{
 \item{distances}{A vector representing distance measures}
 
-\item{correlations}{A vector of the corresponding average pair-wise correlation at that distance.}
+\item{correlations}{A vector of the corresponding average pair-wise
+correlation at that distance.}
+}
+\value{
+
 }
 \description{
-This function takes in two vectors that define the correlation profile of any collective system and measures the slope at the zero-intercept (correlation length)
-by using the 5-point stencil method on the five data points closest to the x-intercept of the correlation profile.
+This function takes in two vectors that define the correlation profile of any
+collective system and measures the slope at the zero-intercept (correlation
+length) by using the 5-point stencil method on the five data points closest
+to the x-intercept of the correlation profile. Based off of advice from
+http://www.theanalysisfactor.com/r-tutorial-4/
 }

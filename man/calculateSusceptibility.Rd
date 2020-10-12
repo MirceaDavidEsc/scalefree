@@ -2,21 +2,25 @@
 % Please edit documentation in R/correlationCalculationFunctions.R
 \name{calculateSusceptibility}
 \alias{calculateSusceptibility}
-\title{Calculate susceptibility (maximum cumulative correlation)
-Uses the method developed in Attanasi et al. 2014 to calculate the finite-size susceptibility or maximal cumulative correlation
-of a collectively moving system. The cumulative correlation is calculated using the trapezoidal (Simpson's) rule for numerical integration.
-This function filters the correlation profile to only consider values before the first zero-crossing if it detects any negative correlation values.}
+\title{Calculate Susceptibility (Maximum Cumulative Correlation)}
 \usage{
 calculateSusceptibility(distance = 1:length(correlation), correlation)
 }
 \arguments{
-\item{distance}{The domain over which to integrate. If not provided, daata points are assumed to be evenly spaced with distance 1.}
+\item{distance}{The domain over which to integrate. If not provided, daata
+points are assumed to be evenly spaced with distance 1.}
 
 \item{correlation}{The correlation at the corresponding distance.}
 }
+\value{
+
+}
 \description{
-Calculate susceptibility (maximum cumulative correlation)
-Uses the method developed in Attanasi et al. 2014 to calculate the finite-size susceptibility or maximal cumulative correlation
-of a collectively moving system. The cumulative correlation is calculated using the trapezoidal (Simpson's) rule for numerical integration.
-This function filters the correlation profile to only consider values before the first zero-crossing if it detects any negative correlation values.
+Uses the method
+developed in Attanasi et al. 2014 to calculate the finite-size susceptibility
+or maximal cumulative correlation of a collectively moving system. The
+cumulative correlation is calculated using the trapezoidal (Simpson's) rule
+for numerical integration. This function filters the correlation profile to
+only consider values before the first zero-crossing if it detects any
+negative correlation values.
 }

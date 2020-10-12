@@ -9,6 +9,9 @@ calcCorrelationLengths(groupedProfiles)
 \arguments{
 \item{correlationProfiles}{A data frame of correlation profiles, grouped by a certain column.}
 }
+\value{
+
+}
 \description{
 This function takes a data frame of correlation profiles (grouped by a certain variable) and determines the zero-intercept (correlation length) for each ccorrelation profile.
 It is dependent on nesting ahd purrr map functions to iterate over all the profiles. You should install those two packages before using this.
