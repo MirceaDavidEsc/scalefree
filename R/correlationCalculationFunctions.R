@@ -526,6 +526,7 @@ removeBoundary = function (pointsDF)
 {
   pointsDF$bulk = scalefree::identifyBoundary(pointsDF$X, pointsDF$Y, 0.1, 5)
   pointsDF = pointsDF[pointsDF$bulk,]
+  pointsDF = pointsDF[,1:4]
   return(pointsDF)
 }
 
