@@ -157,8 +157,6 @@ calculateCollectiveField = function(frameVectorField) {
 #'
 #' @return Affine x translation, y translation, rotation angle, and dilatation to match points.
 #' @export
-#'
-#' @examples
 calculateOptimalAffine = function(positions) {
   # Calculate the optimal affine transformation parameters that minimize the difference between the initial and final positions.
   ## Do a coarse-grained hyperparameter optimization at first. Run 10000 iterations.
@@ -195,8 +193,6 @@ calculateOptimalAffine = function(positions) {
 #'
 #' @return The sum of pair-wise distances.
 #' @export
-#'
-#' @examples
 measureDeviation = function(transformParams, data) {
   transPoints = affineTransform(data[,3:4], transformParams[1], transformParams[2], transformParams[3], transformParams[4])
   sum(sqrt((data[,1] - transPoints[,1])^2 + (data[,2] - transPoints[,2])^2))
@@ -216,8 +212,6 @@ measureDeviation = function(transformParams, data) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 affineTransform = function(points, translateX = 0, translateY = 0, rotate = 0, dilate = 1) {
   colnames(points) = c("X", "Y")
   center = colMeans(points)
@@ -241,8 +235,6 @@ affineTransform = function(points, translateX = 0, translateY = 0, rotate = 0, d
 #'
 #' @return
 #' @export
-#'
-#' @examples
 removeTranslationalComponent = function(thisFrame) {
   ###FUNCTION: Taking a vector field as input, this function removes any mean translational motion captured by the vector field (u,v) and produces (relu,relv) and places the coordinates of the vector field (R,C) in a center-of-mass reference frame (relR,relC).
 
@@ -257,8 +249,6 @@ removeTranslationalComponent = function(thisFrame) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 removeRotationalComponent = function(thisFrame) {
   ###FUNCTION: This function removes the rotational movement (from the center-of-mass reference frame) of a vector field. This function assumes the object(s) represented by the vector field rotates as a solid object, such that the angular speed of rotation is linearly proportional to the radial distance from the center of mass.
   require(dplyr)
@@ -296,8 +286,6 @@ removeRotationalComponent = function(thisFrame) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 correlationSlope = function(distances, correlations) {
 
   quadraticFit = lm(correlations ~ distances + I(distances^2))
@@ -326,8 +314,6 @@ correlationSlope = function(distances, correlations) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 calculateSusceptibility = function(distance = 1:length(correlation), correlation) {
   # Calculate susceptibility using trapezoidal rule of the curve.
   # Filter at the first zero crossing if not done already
@@ -354,8 +340,6 @@ calculateSusceptibility = function(distance = 1:length(correlation), correlation
 #'
 #' @return The pairwise velocity, direction, and speed correlation for all pairs of vectors found in frameData
 #' @export
-#'
-#' @examples
 getPairwiseCorrelations = function(frameData, memoryMaxVectors = 3000) {
   # From positions and full velocities, get the positions of each vector relative to the center and
   # velocities relative to the mean.
@@ -436,8 +420,6 @@ getSpeedCorrelation = function(velocityVectors) {
 #' @return
 #' @export
 #'
-#' @examples
-#'
 #' @keywords internal
 getPairwiseIndices = function(numVectors) {
   # Produce all index pairs, excluding repeat entries by only getting upper-triangle.
@@ -456,8 +438,6 @@ getPairwiseIndices = function(numVectors) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 normCorrFunction = function(domain,correlations, resolution=1, nknots = 50) {
   splineVal = bigspline(domain, correlations, type="cub", nknots)
 
@@ -475,15 +455,13 @@ normCorrFunction = function(domain,correlations, resolution=1, nknots = 50) {
 
 
 
-#' Title
+#' Get first zero crossing of a function
 #'
 #' @param thisVector A numeric vector
 #' @param distMapping A numeric vector
 #'
 #' @return
 #' @export
-#'
-#' @examples
 getFirstZeroCrossing = function(thisVector,distMapping=1:length(thisVector)) {
   signDiff = diff(sign(thisVector))
   crossing = first(which(signDiff != 0))
@@ -511,8 +489,6 @@ getFirstZeroCrossing = function(thisVector,distMapping=1:length(thisVector)) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 identifyBoundary = function(X, Y, marginPercent, ballSize) {
   centered = cbind(X - mean(X), Y - mean(Y))
   jitterPoints = as.data.frame(apply(centered,2, jitter))
@@ -532,8 +508,6 @@ identifyBoundary = function(X, Y, marginPercent, ballSize) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 removeBoundary = function (pointsDF)
 {
   pointsDF$bulk = scalefree::identifyBoundary(pointsDF$X, pointsDF$Y, 0.1, 5)
@@ -549,8 +523,6 @@ removeBoundary = function (pointsDF)
 #'
 #' @return
 #' @export
-#'
-#' @examples
 standardizePlacozoaVectors = function(dataFrame) {
   returnDF = select(dataFrame, X = V2, Y = V1, vX = V4, vY = V5, Frame = V3)
   return(returnDF)

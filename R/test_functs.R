@@ -90,15 +90,6 @@ test_retrieveFluctuations = function(testField) {
   realCollective %>% mutate(speed = sqrt(colX^2 + colY^2)) %>% ggplot(aes(speed)) + geom_histogram()
 }
 
-
-#' test_retrieveCollective
-#'
-#' @param testField
-#'
-#' @return
-#' @export
-#'
-#' @examples
 test_retrieveCollective = function(testField) {
   fluctField = calculateFluctuationField(testField)
   collectiveField = calculateCollectiveField(testField)

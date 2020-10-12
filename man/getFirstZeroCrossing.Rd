@@ -2,7 +2,7 @@
 % Please edit documentation in R/correlationCalculationFunctions.R
 \name{getFirstZeroCrossing}
 \alias{getFirstZeroCrossing}
-\title{Title}
+\title{Get first zero crossing of a function}
 \usage{
 getFirstZeroCrossing(thisVector, distMapping = 1:length(thisVector))
 }
@@ -15,5 +15,5 @@ getFirstZeroCrossing(thisVector, distMapping = 1:length(thisVector))
 
 }
 \description{
-Title
+Get first zero crossing of a function
 }
