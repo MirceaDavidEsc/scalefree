@@ -159,18 +159,18 @@ calculateCollectiveField = function(frameVectorField) {
 #' @export
 calculateOptimalAffine = function(positions) {
   # Calculate the optimal affine transformation parameters that minimize the difference between the initial and final positions.
-  ## Do a coarse-grained hyperparameter optimization at first. Run 10000 iterations.
+  ## Do a coarse-grained hyperparameter optimization at first. Run 100 iterations.
   rangeVX = range(positions[,3] - positions[,1])
   rangeVY = range(positions[,4] - positions[,2])
-  randX = runif(1000, rangeVX[1], rangeVX[2])
-  randY = runif(1000, rangeVY[1], rangeVY[2])
-  randR = runif(1000, -pi/2, pi/2)
-  randD = runif(1000, 0.5, 2) # A halving or doubling in size
+  randX = runif(50, rangeVX[1], rangeVX[2])
+  randY = runif(50, rangeVY[1], rangeVY[2])
+  randR = runif(50, -pi/2, pi/2)
+  randD = runif(50, 0.5, 2) # A halving or doubling in size
 
   i = 1
   bestParams = c(0,0,0,1) # Start with no affine transform at all (no translation, rotation, dilatation of 1 [same size])
   bestDeviation = measureDeviation(bestParams, positions)
-  while (i < 1000) {
+  while (i < 50) {
     tempParams = c(randX[i], randY[i], randR[i], randD[i])
     tempDeviation = measureDeviation(tempParams, positions)
     if (tempDeviation < bestDeviation) {
